@@ -21,7 +21,7 @@ standard output can be used. Wcheck mode sends parts of buffer's content
 to an external program or an Emacs Lisp function and, relying on their
 output, decides if some parts of text should be marked in the buffer.
 
-[Emacs]: http://www.gnu.org/software/emacs/
+[Emacs]: https://www.gnu.org/software/emacs/
 
 
 Features
@@ -84,17 +84,19 @@ It has more configuration possibilities than other spell-checkers and
 the on-the-fly checker performs very well. It's a true real-time
 checker.
 
-[Flyspell]: http://www.emacswiki.org/emacs/FlySpell
-[Speck]:    http://www.emacswiki.org/SpeckMode
+[Flyspell]: https://www.emacswiki.org/emacs/FlySpell
+[Speck]:    https://www.emacswiki.org/emacs/SpeckMode
 
 
 Install
 -------
 
-You can install Wcheck mode through [GNU Elpa][Elpa] or [Melpa][]
-package archives. Alternatively you can put `wcheck-mode.el` file to
-some directory in your Emacs's `load-path` and add the following lines
-to Emacs's initialization file (`~/.emacs` or `~/.emacs.d/init.el`):
+You can install Wcheck mode from [GNU Elpa][Elpa] package archive. Use
+Emacs command `M-x list-packages` and search for package `wcheck-mode`.
+
+Alternatively you can put `wcheck-mode.el` file to some directory in
+your Emacs's `load-path` and add the following lines to Emacs's
+initialization file (`~/.emacs` or `~/.emacs.d/init.el`):
 
     (autoload 'wcheck-mode "wcheck-mode"
       "Toggle wcheck-mode." t)
@@ -107,8 +109,7 @@ to Emacs's initialization file (`~/.emacs` or `~/.emacs.d/init.el`):
     (autoload 'wcheck-jump-backward "wcheck-mode"
       "Move point backward to previous marked text area." t)
 
-[Elpa]:  https://elpa.gnu.org/
-[Melpa]: https://melpa.org/
+[Elpa]: https://elpa.gnu.org/
 
 
 Configuration and basic usage
@@ -389,7 +390,7 @@ branches and possibly merged to _master_ when they are ready.
 Copyright and license
 ---------------------
 
-Copyright (C) 2009-2019 Free Software Foundation, Inc.
+Copyright (C) 2009-2020 Free Software Foundation, Inc.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
