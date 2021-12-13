@@ -7,7 +7,7 @@
 ;; Created: 2009-07-04
 ;; URL: https://github.com/tlikonen/wcheck-mode
 ;; Keywords: text spell check languages ispell
-;; Version: 2020.10.4
+;; Version: 2021
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -2059,14 +2059,7 @@ a (valid) value for the KEY then query the value from
 (defun wcheck--current-idle-time-seconds ()
   "Return current idle time in seconds.
 The returned value is a floating point number."
-  (let* ((idle (or (current-idle-time)
-                   '(0 0 0)))
-         (high (nth 0 idle))
-         (low (nth 1 idle))
-         (micros (nth 2 idle)))
-    (+ (* high 65536)
-       low
-       (/ micros 1000000.0))))
+  (float-time (or (current-idle-time) 0)))
 
 
 (defun wcheck--combine-overlapping-areas (alist)
