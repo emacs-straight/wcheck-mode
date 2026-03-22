@@ -1,2 +1,2 @@
-;; Generated package description from wcheck-mode.el  -*- no-byte-compile: t -*-
-(define-package "wcheck-mode" "2021.0.20220101.81620" "General interface for text checkers" 'nil :commit "4a2439ed486342d825259b62cde2e73ef34dbc04" :authors '(("Teemu Likonen" . "tlikonen@iki.fi")) :maintainer '("Teemu Likonen" . "tlikonen@iki.fi") :keywords '("text" "spell" "check" "languages" "ispell") :url "https://github.com/tlikonen/wcheck-mode")
+;; Generated package description from wcheck-mode.el  -*- no-byte-compile: t; lexical-binding:t -*-
+(define-package "wcheck-mode" "2021.0.20260321.190237" "General interface for text checkers" 'nil :commit "ead537cd31c18d7ef5a38eb5f4e6105a70a039e7" :authors '(("Teemu Likonen" . "tlikonen@iki.fi")) :maintainer '("Teemu Likonen" . "tlikonen@iki.fi") :keywords '("text" "spell" "check" "languages" "ispell") :url "https://github.com/tlikonen/wcheck-mode")

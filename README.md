@@ -96,7 +96,7 @@ Emacs command `M-x list-packages` and search for package `wcheck-mode`.
 
 Alternatively you can put `wcheck-mode.el` file to some directory in
 your Emacs's `load-path` and add the following lines to Emacs's
-initialization file (`~/.emacs` or `~/.emacs.d/init.el`):
+initialization file:
 
     (autoload 'wcheck-mode "wcheck-mode"
       "Toggle wcheck-mode." t)
@@ -124,14 +124,19 @@ It might be convenient to bind Wcheck mode commands to some easily
 accessible keys. The next example uses `C-c w` as a prefix key for
 different Wcheck commands:
 
-    (global-set-key (kbd "C-c w")
-                    (let ((map (make-sparse-keymap)))
-                      (define-key map "w" 'wcheck-mode)
-                      (define-key map "l" 'wcheck-change-language)
-                      (define-key map "a" 'wcheck-actions)
-                      (define-key map "f" 'wcheck-jump-forward)
-                      (define-key map "b" 'wcheck-jump-backward)
-                      map))
+    ;; C-c w j f f f f ... repeatable in repeat-mode
+    ;; C-c w j b b b b ... repeatable in repeat-mode
+    (defvar-keymap wcheck-jump-repeat-map
+      :doc "Keymap to repeat `wcheck-mode' jump commands."
+      :repeat t
+      "f" 'wcheck-jump-forward
+      "b" 'wcheck-jump-backward)
+
+    (keymap-global-set "C-c w" (define-keymap
+                                 "w" 'wcheck-mode
+                                 "l" 'wcheck-change-language
+                                 "a" 'wcheck-actions
+                                 "j" wcheck-jump-repeat-map))
 
 Interactive command `wcheck-mode` toggles the text-checker minor mode
 for the current buffer. Command `wcheck-change-language` is used to
@@ -394,7 +399,7 @@ branches and possibly merged to _master_ when they are ready.
 Copyright and license
 ---------------------
 
-Copyright (C) 2009-2021 Free Software Foundation, Inc.
+Copyright (C) 2009-2026 Free Software Foundation, Inc.
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
