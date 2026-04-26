@@ -1675,11 +1675,13 @@ any kind of actions, though."
           (let* ((start (copy-marker (aref marked-text 1)))
                  (end (copy-marker (aref marked-text 2)))
                  (actions (wcheck--get-actions marked-text))
-                 (choice (if (and (null (cdr actions))
-                                  (wcheck-query-language-data
-                                   (aref marked-text 4) 'action-autoselect))
-                             (cdar actions)
-                           (wcheck--choose-action-popup actions event))))
+                 (choice (cond ((and (null (cdr actions))
+                                     (wcheck-query-language-data
+                                      (aref marked-text 4) 'action-autoselect))
+                                (cdar actions))
+                               ((and event (display-popup-menus-p))
+                                (wcheck--choose-action-popup actions event))
+                               (t (wcheck--choose-action-minibuffer actions)))))
 
             (cond ((and (stringp choice)
                         (markerp start)
@@ -1784,22 +1786,81 @@ MARKED-TEXT must be a vector such as the one returned by
 
 (defun wcheck--choose-action-popup (actions event)
   "Create a pop-up menu to choose an action.
-ACTIONS is a list in the from of `wcheck--clean-actions'. EVENT is the
-mouse event that originated this sequence of function calls. Return
-user's choice or nil."
-  (let ((menu (make-sparse-keymap "Choice"))
-        (chars "1234567890abcdefghijklmnopqrstuvwxyz")
-        (char-index 0))
-    (dolist (action actions)
-      (let ((menu-item (car action))
-            (menu-action (cdr action)))
-        (when (< char-index (length chars))
-          (keymap-set-after menu (substring chars char-index (1+ char-index))
-            (cons menu-item
-                  (lambda () (interactive)
-                    menu-action))))
-        (setq char-index (1+ char-index))))
-    (popup-menu menu event)))
+ACTIONS is a list from `wcheck--clean-actions'. EVENT is the mouse event
+that originated this sequence of function calls. Return user's choice (a
+string) or nil."
+  (let ((menu (list "Choose"
+                    (cons "" (if actions
+                                 actions
+                               (list "[No actions]"))))))
+    (x-popup-menu event menu)))
+
+
+(defun wcheck--choose-action-minibuffer (actions)
+  "Create a text menu to choose a substitute action.
+ACTIONS is a list from `wcheck--clean-actions'. Return user's choice (a
+string) or nil."
+  (if actions
+      (let* ((chars (append (number-sequence ?1 ?9) (list ?0)
+                            (number-sequence ?a ?z)))
+             (chars-actions nil)
+
+             (choices
+              (with-temp-buffer
+                (let ((action nil)
+                      (char nil)
+                      (choice nil))
+                  (while (and actions chars)
+                    (setq action (pop actions)
+                          char (pop chars)
+                          choice (concat
+                                  (propertize (format "[%c]" char)
+                                              'face 'font-lock-comment-face)
+                                  " "
+                                  (car action)))
+
+                    (push (cons char (cdr action)) chars-actions)
+                    (let ((line-pos (- (point) (line-beginning-position))))
+                      (when (and (> line-pos 0)
+                                 (>= (+ line-pos 2 (length choice)) ; 2 spaces
+                                     (window-width (minibuffer-window))))
+                        (newline 1)))
+
+                    (when (> (point) (line-beginning-position))
+                      (insert "  "))
+                    (insert choice)))
+
+                (newline 1)
+                (add-text-properties (point-min) (point-max) '(read-only t))
+                (buffer-substring (point-min) (point-max))))
+
+             (prompt
+              (apply #'propertize
+                     (let ((last (caar chars-actions)))
+                       (format "Number %s(%s):"
+                               (if (memq last (number-sequence ?a ?z))
+                                   "or letter "
+                                 "")
+                               (cond ((= last ?1) "1")
+                                     ((memq last (number-sequence ?2 ?9))
+                                      (format "1-%c" last))
+                                     ((= last ?0) "1-9,0")
+                                     ((= last ?a) "1-9,0,a")
+                                     ((memq last (number-sequence ?b ?z))
+                                      (format "1-9,0,a-%c" last))
+                                     (t ""))))
+                     minibuffer-prompt-properties)))
+
+        ;; Return the choice or nil.
+        (let ((choice (cdr (assq (read-key (concat choices prompt))
+                                 chars-actions))))
+          (if choice
+              choice
+            (message "Abort")
+            nil)))
+
+    (message "No actions")
+    nil))
 
 
 (defun wcheck-parser-lines (&rest _ignored)
